@@ -5,9 +5,9 @@ let img;
 function setup(){
     createCanvas(500,500);
     video=createCapture(VIDEO);
-    video.size(100,100);
+    video.size(50,50);
     video.hide();
-    img=createImage(100,100);
+    img=createImage(50,50);
 }   
 function draw(){
     frameRate(10);
@@ -22,7 +22,7 @@ function draw(){
 socket.on("pixels",(pixels)=>{
     // console.log(pixels);
     img.loadPixels();
-    for (let i = 0; i < 4 * (100*100); i += 4) {
+    for (let i = 0; i < 4 * (50*50); i += 4) {
         img.pixels[i] = pixels[i];
         img.pixels[i + 1] = pixels[i+2];
         img.pixels[i + 2] = pixels[i+3];
