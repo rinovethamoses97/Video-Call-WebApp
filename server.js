@@ -10,7 +10,8 @@ server=app.listen(process.env.PORT||3000,()=>{
 });
 let io=require("socket.io")(server);
 io.on("connection",(socket)=>{
+    console.log("A client is Conncted");
     socket.on("newFrame",(frame)=>{
-        socket.emit("pixels",frame);
+        socket.broadcast.emit("pixels",frame);
     })
 })
