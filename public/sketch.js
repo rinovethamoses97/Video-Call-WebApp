@@ -5,16 +5,16 @@ let img;
 function setup(){
     createCanvas(500,500);
     video=createCapture(VIDEO);
-    video.size(50,50);
+    video.size(30,30);
     video.hide();
-    img=createImage(50,50);
+    img=createImage(30,30);
 }   
 function draw(){
     frameRate(10);
     background(0);
     frame=video.get();
     image(frame,0,0,100,100);
-    image(img,100,0,200,200);
+    image(img,100,0,100,100);
     frame.loadPixels();
     socket.emit("newFrame",Array.from(frame.pixels));
     // noLoop();
@@ -22,7 +22,7 @@ function draw(){
 socket.on("pixels",(pixels)=>{
     // console.log(pixels);
     img.loadPixels();
-    for (let i = 0; i < 4 * (50*50); i += 4) {
+    for (let i = 0; i < 4 * (30*30); i += 4) {
         img.pixels[i] = pixels[i];
         img.pixels[i + 1] = pixels[i+2];
         img.pixels[i + 2] = pixels[i+3];
