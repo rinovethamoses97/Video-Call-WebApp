@@ -1,4 +1,5 @@
 const socket = io('/');
+let partnerUserId;
 let myStream;
 const videoGrid = document.getElementById('video-grid')
 const myPeer = new Peer(undefined, {
@@ -16,17 +17,16 @@ navigator.mediaDevices.getUserMedia({
 }).then(stream => {
   addVideoStream(myVideo, stream)
     myStream=stream;
-  myPeer.on('call', call => {
+    myPeer.on('call', call => {
     call.answer(stream)
     const video = document.createElement('video')
     call.on('stream', userVideoStream => {
       addVideoStream(video, userVideoStream)
     })
   })
-
   socket.on('user-joined', userId => {
     console.log("User Joined",userId);
-    // connectToNewUser(userId, stream)
+    connectToNewUser(userId, stream)
   })
 })
 
@@ -40,14 +40,12 @@ function connectToNewUser(userId, stream) {
   const video = document.createElement('video')
   call.on('stream', userVideoStream => {
       console.log("Hurray");
-    addVideoStream(video, userVideoStream)
+      addVideoStream(video, userVideoStream)
   })
   call.on('close', () => {
     video.remove()
   })
-
 }
-
 function addVideoStream(video, stream) {
   video.srcObject = stream
   video.addEventListener('loadedmetadata', () => {
