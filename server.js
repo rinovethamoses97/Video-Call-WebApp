@@ -10,6 +10,7 @@ server=app.listen(process.env.PORT||3000,()=>{
 });
 let io=require("socket.io")(server);
 io.on("connection",(socket)=>{
+    console.log("A client joined");
     socket.on('join-room',(roomId,userId)=>{
         console.log("A client joined");
         socket.join(roomId);
