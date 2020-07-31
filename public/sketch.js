@@ -2,7 +2,8 @@ const socket = io('/');
 let myStream;
 const videoGrid = document.getElementById('video-grid')
 const myPeer = new Peer(undefined, {
-  host: '/',
+  secure:true,
+  host: 'webcam-video-chat.herokuapp.com',
   port: '3001'
 })
 const myVideo = document.createElement('video')
