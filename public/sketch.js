@@ -3,7 +3,7 @@ let myStream;
 const videoGrid = document.getElementById('video-grid')
 const myPeer = new Peer(undefined, {
   secure:true,
-  host: 'webcam-video-chat.herokuapp.com',
+  host: 'https://mypeerjsser.herokuapp.com/',
   port: '443'
 })
 const myVideo = document.createElement('video')
