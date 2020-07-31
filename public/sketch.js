@@ -1,32 +1,55 @@
-let video;
-let frame;
-let socket=io();
-let img;
-function setup(){
-    createCanvas(500,500);
-    video=createCapture(VIDEO);
-    video.size(30,30);
-    video.hide();
-    img=createImage(30,30);
-}   
-function draw(){
-    frameRate(10);
-    background(0);
-    frame=video.get();
-    image(frame,0,0,100,100);
-    image(img,100,0,100,100);
-    frame.loadPixels();
-    socket.emit("newFrame",Array.from(frame.pixels));
-    // noLoop();
-}
-socket.on("pixels",(pixels)=>{
-    // console.log(pixels);
-    img.loadPixels();
-    for (let i = 0; i < 4 * (30*30); i += 4) {
-        img.pixels[i] = pixels[i];
-        img.pixels[i + 1] = pixels[i+2];
-        img.pixels[i + 2] = pixels[i+3];
-        img.pixels[i + 3] = pixels[i+4];
-    }
-    img.updatePixels();
+const socket = io('/');
+let myStream;
+const videoGrid = document.getElementById('video-grid')
+const myPeer = new Peer(undefined, {
+  host: '/',
+  port: '3001'
 })
+const myVideo = document.createElement('video')
+myVideo.muted = true
+const peers = {}
+navigator.mediaDevices.getUserMedia({
+  video: true,
+  audio: true
+}).then(stream => {
+  addVideoStream(myVideo, stream)
+    myStream=stream;
+  myPeer.on('call', call => {
+    call.answer(stream)
+    const video = document.createElement('video')
+    call.on('stream', userVideoStream => {
+      addVideoStream(video, userVideoStream)
+    })
+  })
+
+  socket.on('user-joined', userId => {
+    console.log("User Joined",userId);
+    // connectToNewUser(userId, stream)
+  })
+})
+
+
+myPeer.on('open', id => {
+  socket.emit('join-room', ROOM_ID, id)
+})
+
+function connectToNewUser(userId, stream) {
+  const call = myPeer.call(userId, stream)
+  const video = document.createElement('video')
+  call.on('stream', userVideoStream => {
+      console.log("Hurray");
+    addVideoStream(video, userVideoStream)
+  })
+  call.on('close', () => {
+    video.remove()
+  })
+
+}
+
+function addVideoStream(video, stream) {
+  video.srcObject = stream
+  video.addEventListener('loadedmetadata', () => {
+    video.play()
+  })
+  videoGrid.append(video)
+}

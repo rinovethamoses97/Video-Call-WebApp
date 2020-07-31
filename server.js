@@ -10,8 +10,9 @@ server=app.listen(process.env.PORT||3000,()=>{
 });
 let io=require("socket.io")(server);
 io.on("connection",(socket)=>{
-    console.log("A client is Conncted");
-    socket.on("newFrame",(frame)=>{
-        socket.broadcast.emit("pixels",frame);
-    })
+    socket.on('join-room',(roomId,userId)=>{
+        console.log("A client joined");
+        socket.join(roomId);
+        socket.to(roomId).broadcast.emit("user-joined",(userId)); 
+    })   
 })
